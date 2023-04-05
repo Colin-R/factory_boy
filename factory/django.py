@@ -66,9 +66,10 @@ class DjangoOptions(base.FactoryOptions):
 
     def get_model_class(self):
         if isinstance(self.model, str) and '.' in self.model:
-            app, model_name = self.model.split('.', 1)
+            model_split = self.model.split('.')
+            app, model_name = model_split[0], model_split[-1]
             self.model = get_model(app, model_name)
-
+        # ToDo: Raise exception
         return self.model
 
 
@@ -87,13 +88,14 @@ class DjangoModelFactory(base.Factory):
     class Meta:
         abstract = True  # Optional, but explicit.
 
+    # ToDo: Test _load_model_class
     @classmethod
     def _load_model_class(cls, definition):
-
         if isinstance(definition, str) and '.' in definition:
-            app, model = definition.split('.', 1)
+            model_split = definition.split('.')
+            app, model = model_split[0], model_split[-1]
             return get_model(app, model)
-
+        # ToDo: Raise exception
         return definition
 
     @classmethod

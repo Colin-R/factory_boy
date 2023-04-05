@@ -309,6 +309,13 @@ class DjangoModelLoadingTestCase(django_test.TestCase):
 
         self.assertEqual(models.StandardModel, ExampleFactory._meta.get_model_class())
 
+    def test_loading_multiple_hierarchy(self):
+        class ExampleFactory(factory.django.DjangoModelFactory):
+            class Meta:
+                model = 'djapp.module.StandardModel'
+
+        self.assertEqual(models.StandardModel, ExampleFactory._meta.get_model_class())
+
     def test_building(self):
         class ExampleFactory(factory.django.DjangoModelFactory):
             class Meta:
