@@ -65,11 +65,15 @@ class DjangoOptions(base.FactoryOptions):
         return counter_reference
 
     def get_model_class(self):
-        if isinstance(self.model, str) and '.' in self.model:
+        if isinstance(self.model, str):
+            if '.' not in self.model:
+                raise errors.InvalidDjangoModelPathError(
+                    f"Invalid Django Model path provided: {self.model}")
+
             model_split = self.model.split('.')
             app, model_name = model_split[0], model_split[-1]
             self.model = get_model(app, model_name)
-        # ToDo: Raise exception
+
         return self.model
 
 
@@ -91,11 +95,15 @@ class DjangoModelFactory(base.Factory):
     # ToDo: Test _load_model_class
     @classmethod
     def _load_model_class(cls, definition):
-        if isinstance(definition, str) and '.' in definition:
+        if isinstance(definition, str):
+            if '.' not in definition:
+                # ToDo: Add tests for raised error
+                raise errors.InvalidDjangoModelPathError(
+                    f"Invalid Django Model path provided: {definition}")
+
             model_split = definition.split('.')
             app, model = model_split[0], model_split[-1]
             return get_model(app, model)
-        # ToDo: Raise exception
         return definition
 
     @classmethod

@@ -27,3 +27,7 @@ class InvalidDeclarationError(FactoryError):
     This means that the user declared 'foo__bar' without adding a declaration
     at 'foo'.
     """
+
+
+class InvalidDjangoModelPathError(FactoryError):
+    """Raised when an invalid Django Model path is provided."""
