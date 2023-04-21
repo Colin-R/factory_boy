@@ -22,6 +22,7 @@ from django.test import utils as django_test_utils
 
 import factory
 import factory.django
+from factory import errors
 
 from . import testdata
 
@@ -302,10 +303,23 @@ class DjangoModelLoadingTestCase(django_test.TestCase):
     """Tests class Meta:
      model = 'app.Model' pattern."""
 
+    def test_bad_model_path_raises_invalid_django_model_path_error(self):
+        with self.assertRaises(errors.InvalidDjangoModelPathError):
+            class ExampleFactory(factory.django.DjangoModelFactory):
+                class Meta:
+                    model = 'djapp'
+
     def test_loading(self):
         class ExampleFactory(factory.django.DjangoModelFactory):
             class Meta:
                 model = 'djapp.StandardModel'
+
+        self.assertEqual(models.StandardModel, ExampleFactory._meta.get_model_class())
+
+    def test_loading_multiple_hierarchy(self):
+        class ExampleFactory(factory.django.DjangoModelFactory):
+            class Meta:
+                model = 'djapp.module.StandardModel'
 
         self.assertEqual(models.StandardModel, ExampleFactory._meta.get_model_class())
 
